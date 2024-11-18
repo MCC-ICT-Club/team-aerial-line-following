@@ -45,8 +45,6 @@ captureProperties = [
 
 trackBarNames = []
 
-
-
 def empty(a):
     pass
 
@@ -59,38 +57,9 @@ cv.createTrackbar("SAT Max", "HSV", 255, 255, empty)
 cv.createTrackbar("VALUE Min", "HSV", 0, 255, empty)
 cv.createTrackbar("VALUE Max", "HSV", 255, 255, empty)
 
-cv.namedWindow("Lighting")
-cv.resizeWindow("Lighting", 640, 240)
-cv.createTrackbar("Exposure", "Lighting", 1500, 2000, empty)
-cv.createTrackbar("Brightness", "Lighting", 155, 255, empty)
-cv.createTrackbar("Gain", "Lighting", 75, 255, empty)
-cv.createTrackbar("Saturation", "Lighting", 50, 255, empty)
-cv.createTrackbar("Temperature", "Lighting", 0, 10000, empty)
-cv.createTrackbar("Constrast", "Lighting", 0, 255, empty)
-cv.createTrackbar("WB Temperature", "Lighting", 0, 10000, empty)
-cv.createTrackbar("GUID", "Lighting", -40,  40, empty)
-cv.createTrackbar("IRIS", "Lighting", -40, 40, empty)
-cv.createTrackbar("Backlight", "Lighting", 50, 255, empty)
-cv.createTrackbar("Trigger", "Lighting", 0, 255, empty)
-cv.createTrackbar("Monochrome", "Lighting", 0, 255, empty)
-cv.createTrackbar("FPS", "Lighting", 0, 30, empty)
-cv.createTrackbar("MODE", "Lighting", 0, 30, empty)
-
-cv.createTrackbar("Rectification", "Lighting", 0, 30, empty)
-cv.createTrackbar("Convert RGB", "Lighting", 0, 30, empty)
-cv.createTrackbar("Sharpness", "Lighting", 0, 30, empty)
-cv.createTrackbar("Focus", "Lighting", 0, 30, empty)
-cv.createTrackbar("Settings", "Lighting", 0, 30, empty)
-cv.createTrackbar("Channel", "Lighting", 0, 30, empty)
-cv.createTrackbar("Codec Pixel Format", "Lighting", 0, 30, empty)
-cv.createTrackbar("Bitrate", "Lighting", 0, 30, empty)
-cv.createTrackbar("Video Stream", "Lighting", 0, 30, empty)
-cv.createTrackbar("FourCC", "Lighting", 0, 30, empty)
-
 def initializeCamera(camNum):
     cap = cv.VideoCapture(camNum, cv.CAP_V4L2)
     cap.set(cv.CAP_PROP_BUFFERSIZE, bufferSize)
-    # cap.set(cv.CAP_PROP_CONTRAST, 255)
     return cap
 
 def setCaptureProperty(cap, prop_id, value, prop_name):
@@ -231,52 +200,21 @@ def appropriateCapPropValue(cap, prop_id):
 cap = initializeCamera(camNum)
 frameCounter = 0
 
-def createLightingWindow():
-    count = 0
-    newList = []
-    nameList = []
-    newCapPropList = []
-    nonAdjustablePropData = open("nonAdjustableProperties.txt", 'w')
-    print(f'{newCapPropList}')
-    for capProp in captureProperties:
-        if cap.get(capProp) == -1.0:
-            poppedItem = captureProperties[count]
-            newList.append(poppedItem)
-        
-        if count == (len(captureProperties) -1):
-            count = 0
-        
-        count += 1
+def removeUnsupportedProperties():
+    workingProp = []
 
+    for capProp in captureProperties:
+        if cap.get(capProp) != -1.0:
+            workingProp.append(capProp)
     
-    
-    count = 0
-    counter = 0
+    return workingProp
+        
+def createLightingWindow():
     cv.namedWindow("Lighting")
     cv.resizeWindow("Lighting", 640, 240)
-    for capProp in captureProperties:
-        value, propName = appropriateCapPropValue(cap, capProp)
-        print(f'Count: {count}\n')
-        print(f'Current Cap Prop: {capProp}')
+    supportedProperties = removeUnsupportedProperties()
 
-        if value != -1:
-            popItem = captureProperties[counter]
-            newCapPropList.append(popItem)
-
-        # if capProp == newList[count]:
-        #     print(f'Cap Prop: {capProp} \nNew List: {newList[count]}')
-        #     newCapPropList.remove(capProp)
-        
-        if count == (len(newList) -1):
-            count = 0
-
-        if count == (len(captureProperties) -1):
-            count = 0
-
-        count += 1
-        counter += 1
-
-    for capProp in newCapPropList:
+    for capProp in supportedProperties:
         value, propName = appropriateCapPropValue(cap, capProp)
         cv.createTrackbar(propName, "Lighting", 0, 255, empty)
         if capProp == 23:
@@ -284,12 +222,7 @@ def createLightingWindow():
         elif capProp == 45:
             cv.createTrackbar(propName, "Lighting", 0, 7000, empty)
 
-    nonAdjustablePropData.write(f'{newList}\n')
-    nonAdjustablePropData.write(f'{nameList}\n')
-    nonAdjustablePropData.write(f'{captureProperties}\n')
-    nonAdjustablePropData.write(f'{newCapPropList}\n')
-        
-# createLightingWindow()
+createLightingWindow()
 
 while True:
     #img = me.get_frame_read().frame
@@ -309,8 +242,8 @@ while True:
     cap.set(cv.CAP_PROP_CONTRAST, 80)
 
     camPropData = open("camPropData.txt", 'w')
-    
-    for capProp in captureProperties:
+    supportedProperties = removeUnsupportedProperties()
+    for capProp in supportedProperties:
         cap.set(cv.CAP_PROP_CONTRAST, 55)
         value, propName = appropriateCapPropValue(cap, capProp)
         camProp = setCaptureProperty(cap, capProp, value, propName)
