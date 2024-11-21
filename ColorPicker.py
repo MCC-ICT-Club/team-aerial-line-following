@@ -1,3 +1,26 @@
+# *****************************************************************************
+# ***************************  Python Source Code  ****************************
+# *****************************************************************************
+#
+#   DESIGNER NAME:  Murtaza's Workshop
+#
+#       FILE NAME:  ColorPicker.py
+#
+# DESCRIPTION
+#    This code provides a means to single out a specific color using the opencv
+#    and numpy library. It provides two windows and prints information on the 
+#    current HSV value for use in various computer applications where that 
+#    value can be applied to detect, read and localize a specific color on 
+#    screen. One windows provides a set of trackbars to adjust the HSV values
+#    while the other window lets you look at what color is thats being picked up 
+#    based on what appears as white in the center image.
+#
+#    Black out the parts of the image you do not being recognized as the color
+#    of interest and make white the parts of the image you do want as the color
+#    your looking to detect.
+#
+# *****************************************************************************
+
 import cv2 as cv
 import numpy as np
 #import djitellopy as tello
