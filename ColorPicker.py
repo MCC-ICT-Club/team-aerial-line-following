@@ -65,7 +65,7 @@ def initializeCamera(camNum):
 def setCaptureProperty(cap, prop_id, value, prop_name):
     cap.set(prop_id, value)
     actual_value = cap.get(prop_id)
-    camProp = f'Property {prop_name} set to {actual_value}\n'
+    camProp = f'Property {prop_id}: \t {prop_name} set to {actual_value}\n'
     return camProp
 
 def appropriateCapPropValue(cap, prop_id):
@@ -134,7 +134,7 @@ def appropriateCapPropValue(cap, prop_id):
         case 32:
             propName = "Backlight"
             backlight = cv.getTrackbarPos("Backlight", "Lighting")
-            value = backlight
+            value = 2
         case 24:
             propName = "Trigger"
             trigger = cv.getTrackbarPos("Trigger", "Lighting")
@@ -200,11 +200,11 @@ def appropriateCapPropValue(cap, prop_id):
 cap = initializeCamera(camNum)
 frameCounter = 0
 
-def removeUnsupportedProperties():
+def getSupportedProperties():
     workingProp = []
 
     for capProp in captureProperties:
-        if cap.get(capProp) != -1.0:
+        if cap.get(capProp) != -1.0 and cap.get(capProp) != 1:
             workingProp.append(capProp)
     
     return workingProp
@@ -212,15 +212,19 @@ def removeUnsupportedProperties():
 def createLightingWindow():
     cv.namedWindow("Lighting")
     cv.resizeWindow("Lighting", 640, 240)
-    supportedProperties = removeUnsupportedProperties()
+    supportedProperties = getSupportedProperties()
 
     for capProp in supportedProperties:
         value, propName = appropriateCapPropValue(cap, capProp)
-        cv.createTrackbar(propName, "Lighting", 0, 255, empty)
+        
         if capProp == 23:
             cv.createTrackbar(propName, "Lighting", 0, 7000, empty)
+        elif capProp == 15:
+            cv.createTrackbar(propName, "Lighting", 0, 1000, empty)
         elif capProp == 45:
             cv.createTrackbar(propName, "Lighting", 0, 7000, empty)
+        else:
+            cv.createTrackbar(propName, "Lighting", 0, 255, empty)
 
 createLightingWindow()
 
@@ -242,9 +246,8 @@ while True:
     cap.set(cv.CAP_PROP_CONTRAST, 80)
 
     camPropData = open("camPropData.txt", 'w')
-    supportedProperties = removeUnsupportedProperties()
+    supportedProperties = getSupportedProperties()
     for capProp in supportedProperties:
-        cap.set(cv.CAP_PROP_CONTRAST, 55)
         value, propName = appropriateCapPropValue(cap, capProp)
         camProp = setCaptureProperty(cap, capProp, value, propName)
         camPropData.write(camProp)

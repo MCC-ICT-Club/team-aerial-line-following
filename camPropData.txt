@@ -1,0 +1,10 @@
+Property 15: 	 Exposure set to 371.0
+Property 10: 	 Brightness set to 183.0
+Property 12: 	 Saturation set to 61.0
+Property 23: 	 Temperature set to 4920.0
+Property 11: 	 Contrast set to 91.0
+Property 45: 	 WB Temperature set to 4920.0
+Property 5: 	 FPS set to 30.0
+Property 9: 	 MODE set to 0.0
+Property 20: 	 Sharpness set to 0.0
+Property 6: 	 FourCC set to 1448695129.0
