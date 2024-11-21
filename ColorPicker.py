@@ -2,7 +2,7 @@
 # ***************************  Python Source Code  ****************************
 # *****************************************************************************
 #
-#   DESIGNER NAME:  Murtaza's Workshop
+#   DESIGNER NAME:  Mario Solis
 #
 #       FILE NAME:  ColorPicker.py
 #
