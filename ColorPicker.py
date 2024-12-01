@@ -142,10 +142,10 @@ def appropriateCapPropValue(cap, prop_id):
             propName = "Contrast"
             contrast = cv.getTrackbarPos("Contrast", "Lighting")
             value = contrast
-        case 45:
-            propName = "WB Temperature"
-            wb_temperature = cv.getTrackbarPos("WB Temperature", "Lighting")
-            value = wb_temperature
+        # case 45:
+        #     propName = "WB Temperature"
+        #     wb_temperature = cv.getTrackbarPos("WB Temperature", "Lighting")
+        #     value = wb_temperature
         case 29:
             propName = "GUID"
             guid = cv.getTrackbarPos("GUID", "Lighting")
@@ -178,10 +178,10 @@ def appropriateCapPropValue(cap, prop_id):
             propName = "Rectification"
             rectification = cv.getTrackbarPos("Rectification", "Lighting")
             value = rectification
-        case 16:
-            propName = "Convert RGB"
-            converRGB = cv.getTrackbarPos("Convert RGB", "Lighting")
-            value = converRGB
+        # case 16:
+        #     propName = "Convert RGB"
+        #     converRGB = cv.getTrackbarPos("Convert RGB", "Lighting")
+        #     value = converRGB
         case 20:
             propName = "Sharpness"
             sharpness = cv.getTrackbarPos("Sharpness", "Lighting")
@@ -220,14 +220,15 @@ def appropriateCapPropValue(cap, prop_id):
 
     return value, propName
 
-cap = initializeCamera(camNum)
-frameCounter = 0
-
 def getSupportedProperties():
     workingProp = []
 
+    # for capProp in captureProperties:
+    #     if cap.get(capProp) != -1.0 and cap.get(capProp) != 1:
+    #         workingProp.append(capProp)
+
     for capProp in captureProperties:
-        if cap.get(capProp) != -1.0 and cap.get(capProp) != 1:
+        if cap.get(capProp) != -1.0:
             workingProp.append(capProp)
     
     return workingProp
@@ -249,6 +250,8 @@ def createLightingWindow():
         else:
             cv.createTrackbar(propName, "Lighting", 0, 255, empty)
 
+cap = initializeCamera(camNum)
+frameCounter = 0
 createLightingWindow()
 
 while True:
